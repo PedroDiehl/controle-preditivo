@@ -37,7 +37,7 @@ for k = 3:length(simulation_time_array) - 1
     ym(k + 1) = cm * r(k - 1) - am * ym(k - 1) - bm * ym(k);
     ym(k + 2) =  cm * r(k) - bm * ym(k + 1) - am * ym(k) ;
  
-    y(k) = c * u(k - 2)- a * y(k - 2) - b * y(k - 1);
+    y(k) = c * u(k - 2) - a * y(k - 2) - b * y(k - 1);
     u(k) = (a * y(k) + b * ym(k + 1) +  ym(k + 2)) / c;
 end
 
