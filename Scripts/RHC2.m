@@ -19,25 +19,16 @@ La = 10e-3; % H > Indutância de armadura
 Kt = 0.05; % Constante de torque do motor
 Kv = 0.05; % Constante de tensão do motor
 
+Nc = 4;
+Np = 20;
+
 num = [(Kt * Kv / (La * B))];
 den = [1 (B / J + Ra / La) ((Ra * B + Kt * Kv) / (La * J))];
 
 G = tf(num, den);
-
-GpssObs = canon(G,'companion');
-GpssObsA = GpssObs.A;
-GpssObsB = GpssObs.B;
-GpssObsC = GpssObs.C;
-GpssObsD = GpssObs.D;
-GpssConA = GpssObsA.';
-GpssConB = GpssObsC.';
-GpssConC = GpssObsB.';
-GpssConD = GpssObsD;
-
-[Ad, Bd, Cd, Dd] = c2dm(GpssConA, GpssConB, GpssConC, GpssConD, Ts, 'zoh');
-
-Nc = 4;
-Np = 20;
+[Ap, Bp, Cp, Dp] = tf2ss(num, den)
+[Ae, Be, Ce, De] = MPCmodel(Ap, Bp, Cp, Dp);
+[phiTphi, phiTF, phiTRsBarra, RsBarra] = MPCgain(Ae, Be, Ce, Nc, Np);
 
 r = [1];
 u = [0];
@@ -46,6 +37,7 @@ y = [0];
 xm = [0; 0];
 % Xf = Deltaxm; y]
 Xf = [xm; y];
+rw = 0.1;
 
 A = 2;
 fsin = 1;
@@ -68,6 +60,6 @@ for k = 2:length(simulation_time_array) - 1
     Xf = [xm(1:2, k) - xm(1:2, k - 1); y(k)];
 end
 
-plot(t, ym)
+plot(t, r)
 hold
 plot(t, y)
