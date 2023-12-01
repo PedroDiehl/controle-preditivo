@@ -1,24 +1,24 @@
-function [phiTphi, phiTF, phiTR] = MPCgain(Ap, Bp, Cp, Nc, Np)
+function [phiTphi, phiTF, phiTRsBarra, RsBarra] = MPCgain(Ae, Be, Ce, Nc, Np)
 % Np -> Horizonte de predicao
 % Nc -> Horizonte de controle
     
-    [Arows, Acols] = size(Ap);
+    [Arows, Acols] = size(Ae);
     F = zeros(Np, Acols);
     phi = zeros(Np, Nc);
-    R = ones(1, Np)';
+    RsBarra = ones(1, Np)';
  
     for i = 1:Np
-        F(i, :) = Cp * Ap^i;
+        F(i, :) = Ce * Ae^i;
      
         for j = 1:Nc
             if i - j >= 0
-                phi(i, j) = Cp * Ap^(i - j) * Bp;
+                phi(i, j) = Ce * Ae^(i - j) * Be;
             end
         end
     end
     
     phiTphi = phi' * phi;
     phiTF = phi' * F;
-    phiTR = phi' * R;
+    phiTRsBarra = phi' * RsBarra;
 end
 
